@@ -1,0 +1,449 @@
+# Day 1: Java Basics Interview Questions for SDET
+
+How is your java experience?How do you rate your java skill? Do you have experience with java? etc
+
+I have N years of java programming experience. I used java for building automation frameworks and test automation development.
+I am comfortable with core java, flow control, string manipulation, collections, Object oriented programming,
+exception handling, debugging using java.
+
+If there is already existing automation code for the project, I am comfortable with learning it quickly and start contributing.
+
+## Core Java Concepts
+
+### 1. Java Environment and Memory Management
+**Q: Explain the relationship between JDK, JRE, and JVM.**
+A:
+- JDK (Java Development Kit): Contains tools for developing Java applications, including compiler and JRE
+- JRE (Java Runtime Environment): Contains libraries and JVM needed to run Java applications
+- JVM (Java Virtual Machine): Executes Java bytecode and provides platform independence
+
+Java code -> compiler -> ByteCode -> Interpreted to machine code and executed in JVM
+
+**Q: Explain Java memory management and garbage collection.**
+A:
+- Java has automatic memory management
+- Memory is divided into:
+  * Stack: Stores method frames, local variables, and references
+  * Heap: Stores objects and String pool
+  * Heap is further divided into:
+    - Young Generation (Eden Space, S1, S2)
+    - Old Generation
+    - Metaspace (for class metadata)
+- Garbage collection is the process of automatically freeing memory by deleting objects that are no longer reachable in the program.
+
+**Q: What is the difference between stack and heap memory?**
+A:
+- Stack Memory:
+  * Stores primitive data types and references
+  * LIFO (Last In First Out) structure
+  * Fixed size, faster access
+  * Thread-specific
+  * Automatically managed
+- Heap Memory:
+  * Stores objects and arrays
+  * Dynamic size, slower access
+  * Shared between threads
+  * Managed by garbage collector
+
+**Q: What is garbage collection in Java?**
+A:
+- Automatic memory management process
+- Removes unused objects from heap memory
+- Types of garbage collectors:
+  * Serial GC
+  * Parallel GC
+  * CMS (Concurrent Mark Sweep)
+  * G1 (Garbage First)
+- Process:
+  * Mark: Identify unused objects
+  * Sweep: Remove marked objects
+  * Compact: Defragment memory
+
+### 2. Basic Syntax and Data Types
+**Q: What is the difference between primitive and non-primitive data types?**
+A:
+- Primitives: byte, short, int, long, float, double, char, boolean
+  * Store actual values
+  * Stored in stack
+  * For each primitive there is wrapper classes to convert to object
+- Non-primitives: String, Arrays, Classes
+  * Store references to objects
+  * Can be null
+  * Stored in heap
+
+**Q: What is the difference between local and instance variables?**
+A:
+- Local Variables:
+  * Declared inside methods
+  * No default values
+  * Scope limited to method
+  * Must be initialized before use
+- Instance Variables:
+  * Declared in class
+  * Have default values
+  * Scope throughout class
+  * Can be accessed by any method
+
+**Q: Explain the difference between == and .equals() in Java.**
+A:
+- == with primitives compares values:
+    int n1 = 12;
+    int n2 = 12;
+    n1 == n2 -> true
+- == compares object references (memory addresses)
+    Student st1 = new Student("Mike");
+    Student st2 = new Student("Mike");
+    st1 == st2 -> false
+
+    Student st1 = new Student("Mike");
+    Student st2 = st1;
+    st1 == st2 -> true
+
+- .equals() compares the actual content of objects
+- For String objects:
+  * == checks if they point to same memory location
+  * .equals() checks if string contents are same
+
+  String s1 = "Hello";
+  String s2 = "Hello";
+  s1 == s2 -> true (both are pointing to same object in String pool
+  s1.equals(s2) -> true (contents are same)
+
+**Q: What is type casting in Java?**
+A:
+- Converting one data type to another
+- Two types:
+  * Widening (Implicit): Smaller to larger type
+  * Narrowing (Explicit): Larger to smaller type
+- Example:
+  * Widening: int to long:
+    int n = 34;
+    long l = n;
+  * Narrowing: double to int:
+    double d = 33.5;
+    int n = (int)d; -> 33
+
+**Q: What are wrapper classes in Java? Why are they needed?**
+A:
+- Helps convert primitive to object
+- Classes that wrap primitive data types
+- Provide methods to work with primitives
+- Enable primitives to be used in collections
+- Examples: Integer, Double, Boolean, Character
+- Support autoboxing and unboxing
+
+**Q: What is autoboxing and unboxing?**
+A:
+- Autoboxing: Automatic conversion from primitive to wrapper object (e.g., int to Integer)
+- Unboxing: Automatic conversion from wrapper object to primitive (e.g., Integer to int)
+    int n = 123;
+    Integer n1 = n; //auto boxing
+
+    int n2 = n1; //unboxing
+
+**Q: How do you handle very large numbers in Java?**
+A:
+- Use BigInteger or BigDecimal for numbers beyond primitive limits.
+These classes can represent arbitrarily large numbers and provide methods for arithmetic operations.
+
+// --- BigInteger Example ---
+BigInteger bigInt1 = new BigInteger("123456789123456789123456789");
+BigInteger bigInt2 = new BigInteger("987654321987654321987654321");
+
+BigInteger bigIntSum = bigInt1.add(bigInt2);
+BigInteger bigIntProduct = bigInt1.multiply(bigInt2);
+
+### 3. String Handling
+**Q: What is the difference between String, StringBuilder, and StringBuffer?**
+A:
+- All are sequence of characters "hello"
+- String: Immutable, thread-safe
+- StringBuilder: Mutable, not thread-safe, better performance
+- StringBuffer: Mutable, thread-safe, synchronized methods
+
+**Q: What is string immutability in Java?**
+A:
+- Strings cannot be modified after creation
+- Any modification creates a new string
+- Benefits:
+  * Thread safety
+  * Security
+  * Caching (String pool)
+- Example: String concatenation creates new objects:
+String str = "hello";
+str = str + " Friends!";
+"hello Friends!"
+**Q: What is the String pool in Java?**
+A:
+- Special memory area in heap
+- Stores unique string literals
+- Reuses strings to save memory
+- Created strings using new operator are not pooled
+- intern() method can add strings to pool
+
+**Q: What is the difference between == and .equals() for String?**
+A:
+- == compares object references (memory addresses)
+- .equals() compares the actual content of objects
+- For String objects:
+  * == checks if they point to same memory location
+  * .equals() checks if string contents are same
+
+**Q: What are the common String methods in Java?**
+A:
+- length(): Get string length
+- charAt(): Get character at index
+- substring(): Get substring/partial string
+- concat(): Concatenate strings
+- replace(): Replace characters
+- replaceAll(): Replace characters using regex
+- split(): Split string into array
+- trim(): Remove whitespace
+- toLowerCase()/toUpperCase(): Case conversion
+- indexOf(): Finds the index of a String/char
+
+**Q: Write a method to reverse a string.**
+A:
+```java
+public String reverseString(String str) {
+    StringBuilder sb = new StringBuilder(str);
+    return sb.reverse().toString();
+}
+```
+
+**Q: Write a class for FizzBuzz**
+for (int i = 1; i <= 100; i++) {
+    if (i % 3 == 0 && i % 5 == 0) {
+        System.out.println("FizzBuzz");
+    } else if (i % 3 == 0) {
+        System.out.println("Fizz");
+    } else if (i % 5 == 0) {
+        System.out.println("Buzz");
+    } else {
+        System.out.println(i);
+    }
+}
+
+**Q: Write a method to reverse a sentence.**
+A:
+```java
+public String reverseSentence(String sentence) {
+    String[] words = sentence.split("\\s+");
+    StringBuilder result = new StringBuilder();
+
+    for (int i = words.length - 1; i >= 0; i--) {
+        result.append(words[i]).append(" ");
+    }
+    return result.toString().trim();
+}
+```
+
+**Q: Write a method to find the first non-repeated character.**
+A:
+```java
+"aabccddj" -> b
+public char firstNonRepeatedChar(String str) {
+    Map<Character, Integer> charCount = new HashMap<>();
+
+    for (char c : str.toCharArray()) {
+        charCount.put(c, charCount.getOrDefault(c, 0) + 1);
+    }
+
+    for (char c : str.toCharArray()) {
+        if (charCount.get(c) == 1) {
+            return c;
+        }
+    }
+    return '\0';
+}
+```
+
+### 4. Arrays and Collections Basics
+**Q: What is the difference between Array and ArrayList?**
+A:
+- Array: Fixed size, can store primitives and objects
+- ArrayList: Dynamic size, can only store objects
+- ArrayList provides more utility methods
+- ArrayList is part of Collections framework
+
+**Q: What are the different types of arrays in Java?**
+A:
+- Single-dimensional arrays
+- Multi-dimensional arrays
+
+**Q: What is the difference between shallow and deep copy?**
+A:
+- Shallow Copy:
+  * Creates new object
+  * References same nested objects
+  * Default clone() method
+- Deep Copy:
+  * Creates new object
+  * Creates new copies of nested objects
+  * Custom implementation needed
+
+**Q: What are the common array operations?**
+A:
+- Traversal
+- Searching
+- Sorting
+- Insertion
+- Deletion
+- Merging
+- Splitting
+
+**Q: Write a method to find the maximum number in an array.**
+A:
+```java
+public int findMaxNumber(int[] arr) {
+    if (arr.length == 0) return -1;
+
+    int max = arr[0];
+    for (int num : arr) {
+        if (num > max) {
+            max = num;
+        }
+    }
+    return max;
+}
+```
+
+**Q: Write a method to find the second largest number in an array.**
+A:
+10, 4, 5, 7, 0 -> 7
+```java
+public int findSecondLargest(int[] arr) {
+    if (arr.length < 2) return -1;
+
+    int largest = Integer.MIN_VALUE;
+    int secondLargest = Integer.MIN_VALUE;
+
+    for (int num : arr) {
+        if (num > largest) {
+            secondLargest = largest;
+            largest = num;
+        } else if (num > secondLargest && num != largest) {
+            secondLargest = num;
+        }
+    }
+    return secondLargest;
+}
+```
+
+**Q: Write a method to implement bubble sort.**
+A:
+```java
+public void bubbleSort(int[] arr) {
+    int n = arr.length;
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+```
+
+### 5. Control Flow
+**Q: What is the difference between break and continue statements?**
+A:
+- break: Exits the loop completely
+- continue: Skips the current iteration and continues with the next
+
+**Q: What are the different types of loops in Java?**
+A:
+- for loop: When number of iterations is known
+- while loop: When condition is checked before iteration
+- do-while loop: When condition is checked after iteration
+- for-each loop: For iterating over collections
+
+**Q: What is the difference between if-else and switch statements?**
+A:
+- if-else:
+  * Can check any condition
+  * More flexible
+  * Can use complex conditions
+- switch:
+  * Checks equality only
+  * More efficient for multiple conditions
+  * Can only use integral types and String
+
+**Q: What are the different types of control statements?**
+A:
+- Selection statements (if-else, switch)
+- Iteration statements (loops)
+- Jump statements (break, continue, return)
+- Exception handling statements (try-catch)
+
+### 6. Exception Handling
+**Q: What is the difference between checked and unchecked exceptions?**
+A:
+- Checked exceptions: Must be handled at compile time (IOException, SQLException)
+- Unchecked exceptions: Don't need to be handled (RuntimeException, NullPointerException)
+
+**Q: What is the exception hierarchy in Java?**
+A:
+- Throwable (root)
+  * Error (unchecked)
+  * Exception
+    - RuntimeException (unchecked)
+    - Other exceptions (checked)
+
+**Q: What is the difference between throw and throws?**
+A:
+- throw: Used to throw an exception explicitly
+- throws: Used to declare that a method might throw an exception
+- throw is used inside a method
+- throws is used in method signature
+
+**Q: What is the try-with-resources statement?**
+A:
+- Automatically closes resources
+- Resources must implement AutoCloseable
+- Multiple resources can be declared
+- Resources are closed in reverse order
+- Exception handling is simplified
+
+### 7. SDET-Specific Questions
+**Q: Why is Java popular for test automation?**
+A:
+- Platform independence, strong OOP, rich libraries (JUnit, TestNG, Selenium), community support, and easy integration with developer tools.
+
+**Q: What is the Page Object Model?**
+A:
+- Design pattern for test automation
+- Creates object repository for web elements
+- Separates test logic from page elements
+- Makes tests more maintainable
+- Reduces code duplication
+
+**Q: What are the different types of testing in Java?**
+A:
+- Unit Testing
+- Integration Testing
+- System Testing
+- Performance Testing
+- Security Testing
+- Regression Testing
+
+**Q: What is the difference between JUnit and TestNG?**
+A:
+- JUnit:
+  * Simpler
+  * Less features
+  * No parallel execution(yes after Junit5
+  * No test groups
+- TestNG:
+  * More features
+  * Supports parallel execution
+  * Has test groups
+  * Better reporting
+  * Data providers
+
+### 10. Key Takeaways
+- Mastery of Java basics is essential for SDET interviews.
+- Practice writing and explaining code for common algorithmic problems.
+- Understand memory, data types, and flow control deeply.
