@@ -1,0 +1,1582 @@
+# Comprehensive OOP Interview Questions for SDET
+
+## 1. Core OOP Concepts
+
+### Q1: What are the four main OOP concepts in Java?
+A:
+Conceptual Explanation:
+- **Encapsulation**: Binding data and behavior together, restricting access
+- **Abstraction**: Hiding complex implementation details
+- **Inheritance**: Reusing code through parent-child relationships
+- **Polymorphism**: One interface, multiple implementations
+
+Java Example:
+```java
+// Encapsulation
+public class BankAccount {
+    private double balance;  // Data hiding
+
+    public void deposit(double amount) {  // Behavior
+        if (amount > 0) balance += amount;
+    }
+}
+
+// Abstraction
+public abstract class Vehicle {
+    public abstract void start();  // Hide implementation
+}
+
+// Inheritance
+public class Car extends Vehicle {
+    @Override
+    public void start() {
+        System.out.println("Car starting...");
+    }
+}
+
+// Polymorphism
+Vehicle v = new Car();  // Same interface, different implementation
+v.start();
+```
+
+SDET Automation Example:
+```java
+// Encapsulation in Page Object
+public class LoginPage {
+    private By usernameInput = By.id("username");
+    private By passwordInput = By.id("password");
+
+    public void login(String username, String password) {
+        // Implementation hidden
+    }
+}
+
+// Abstraction in Test Framework
+public abstract class BaseTest {
+    protected WebDriver driver;
+    public abstract void setUpTest();
+}
+
+// Inheritance in Test Classes
+public class LoginTest extends BaseTest {
+    @Override
+    public void setUpTest() {
+        // Specific setup
+    }
+}
+
+// Polymorphism in Test Execution
+BaseTest test = new LoginTest();
+test.setUpTest();
+```
+
+Application Under Test Example:
+```java
+// E-commerce Application
+public abstract class PaymentProcessor {
+    public abstract void processPayment(double amount);
+}
+
+public class CreditCardPayment extends PaymentProcessor {
+    @Override
+    public void processPayment(double amount) {
+        // Credit card specific logic
+    }
+}
+
+public class PayPalPayment extends PaymentProcessor {
+    @Override
+    public void processPayment(double amount) {
+        // PayPal specific logic
+    }
+}
+```
+
+### Q2: What is the difference between a class and an object?
+A:
+Conceptual Explanation:
+- Class: Blueprint/template that defines structure and behavior
+- Object: Instance of a class with its own state
+- Class is logical, object is physical
+- Multiple objects can be created from one class
+
+Java Example:
+```java
+// Class definition
+public class Car {
+    private String brand;
+    private String model;
+
+    public Car(String brand, String model) {
+        this.brand = brand;
+        this.model = model;
+    }
+
+    public void start() {
+        System.out.println(brand + " " + model + " starting...");
+    }
+}
+
+// Creating objects
+Car toyota = new Car("Toyota", "Camry");
+Car honda = new Car("Honda", "Accord");
+```
+
+SDET Automation Example:
+```java
+// Test class definition
+public class TestCase {
+    private String testName;
+    private String description;
+
+    public TestCase(String testName, String description) {
+        this.testName = testName;
+        this.description = description;
+    }
+
+    public void execute() {
+        System.out.println("Executing test: " + testName);
+    }
+}
+
+// Creating test cases
+TestCase loginTest = new TestCase("Login", "Verify user can login");
+TestCase searchTest = new TestCase("Search", "Verify search functionality");
+```
+
+Application Under Test Example:
+```java
+// User class definition
+public class User {
+    private String username;
+    private String role;
+
+    public User(String username, String role) {
+        this.username = username;
+        this.role = role;
+    }
+
+    public boolean hasPermission(String action) {
+        // Permission check logic
+        return true;
+    }
+}
+
+// Creating users
+User admin = new User("admin", "ADMIN");
+User customer = new User("customer", "USER");
+```
+
+### Q3: What is Encapsulation and how is it achieved?
+A:
+Conceptual Explanation:
+- Bundling data and methods that operate on that data
+- Restricting access to data using access modifiers
+- Providing controlled access through public methods
+- Benefits: Data hiding, code organization, maintenance
+
+Java Example:
+```java
+public class BankAccount {
+    private String accountNumber;
+    private double balance;
+
+    public BankAccount(String accountNumber) {
+        this.accountNumber = accountNumber;
+        this.balance = 0.0;
+    }
+
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+        }
+    }
+
+    public boolean withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            return true;
+        }
+        return false;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+}
+```
+
+SDET Automation Example:
+```java
+public class TestConfig {
+    private static String browser;
+    private static String environment;
+
+    public static void setBrowser(String browser) {
+        TestConfig.browser = browser;
+    }
+
+    public static void setEnvironment(String environment) {
+        TestConfig.environment = environment;
+    }
+
+    public static WebDriver createDriver() {
+        // Driver creation logic based on browser
+        return null;
+    }
+}
+```
+
+Application Under Test Example:
+```java
+public class ShoppingCart {
+    private List<Item> items;
+    private double total;
+
+    public ShoppingCart() {
+        this.items = new ArrayList<>();
+        this.total = 0.0;
+    }
+
+    public void addItem(Item item) {
+        items.add(item);
+        calculateTotal();
+    }
+
+    public void removeItem(Item item) {
+        items.remove(item);
+        calculateTotal();
+    }
+
+    private void calculateTotal() {
+        total = items.stream()
+                    .mapToDouble(Item::getPrice)
+                    .sum();
+    }
+
+    public double getTotal() {
+        return total;
+    }
+}
+```
+
+### Q4: What is Inheritance and what are its types?
+A:
+Conceptual Explanation:
+- Mechanism to create new classes from existing ones
+- Types:
+  * Single inheritance: One class extends another
+  * Multilevel inheritance: Chain of inheritance
+  * Hierarchical inheritance: Multiple classes extend one class
+  * Multiple inheritance: Through interfaces
+- Benefits: Code reuse, method overriding, polymorphism
+
+Java Example:
+```java
+// Base class
+public class Animal {
+    protected String name;
+
+    public Animal(String name) {
+        this.name = name;
+    }
+
+    public void eat() {
+        System.out.println(name + " is eating");
+    }
+}
+
+// Single inheritance
+public class Dog extends Animal {
+    public Dog(String name) {
+        super(name);
+    }
+
+    public void bark() {
+        System.out.println(name + " is barking");
+    }
+}
+
+// Multilevel inheritance
+public class Puppy extends Dog {
+    public Puppy(String name) {
+        super(name);
+    }
+
+    public void play() {
+        System.out.println(name + " is playing");
+    }
+}
+```
+
+SDET Automation Example:
+```java
+// Base test class
+public abstract class BaseTest {
+    protected WebDriver driver;
+
+    @BeforeMethod
+    public void setUp() {
+        driver = new ChromeDriver();
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}
+
+// Specific test class
+public class LoginTest extends BaseTest {
+    private LoginPage loginPage;
+
+    @Test
+    public void testValidLogin() {
+        loginPage = new LoginPage(driver);
+        loginPage.login("validUser", "validPass");
+        Assert.assertTrue(loginPage.isLoggedIn());
+    }
+}
+```
+
+Application Under Test Example:
+```java
+// Base payment class
+public abstract class Payment {
+    protected double amount;
+
+    public Payment(double amount) {
+        this.amount = amount;
+    }
+
+    public abstract void process();
+}
+
+// Specific payment types
+public class CreditCardPayment extends Payment {
+    private String cardNumber;
+
+    public CreditCardPayment(double amount, String cardNumber) {
+        super(amount);
+        this.cardNumber = cardNumber;
+    }
+
+    @Override
+    public void process() {
+        // Credit card processing logic
+    }
+}
+
+public class PayPalPayment extends Payment {
+    private String email;
+
+    public PayPalPayment(double amount, String email) {
+        super(amount);
+        this.email = email;
+    }
+
+    @Override
+    public void process() {
+        // PayPal processing logic
+    }
+}
+```
+
+### Q5: What is Polymorphism and what are its types?
+A:
+Conceptual Explanation:
+- Ability of an object to take many forms
+- Types:
+  * Compile-time polymorphism (Method overloading)
+  * Runtime polymorphism (Method overriding)
+- Benefits:
+  * Code flexibility
+  * Code reusability
+  * Maintainability
+  * Extensibility
+
+Java Example:
+```java
+// Compile-time polymorphism (Overloading)
+public class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public double add(double a, double b) {
+        return a + b;
+    }
+
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
+}
+
+// Runtime polymorphism (Overriding)
+public class Payment {
+    public void processPayment() {
+        System.out.println("Processing payment...");
+    }
+}
+
+public class CreditCardPayment extends Payment {
+    @Override
+    public void processPayment() {
+        System.out.println("Processing credit card payment...");
+    }
+}
+
+public class PayPalPayment extends Payment {
+    @Override
+    public void processPayment() {
+        System.out.println("Processing PayPal payment...");
+    }
+}
+
+// Runtime polymorphism in action
+Payment payment = new CreditCardPayment();
+payment.processPayment(); // Outputs: Processing credit card payment...
+
+payment = new PayPalPayment();
+payment.processPayment(); // Outputs: Processing PayPal payment...
+```
+
+SDET Automation Example:
+```java
+// Compile-time polymorphism in test framework
+public class TestDataProvider {
+    public Object[][] getTestData(String testName) {
+        // Default implementation
+        return new Object[][]{{"default"}};
+    }
+
+    public Object[][] getTestData(String testName, String environment) {
+        // Environment-specific data
+        return new Object[][]{{"env-specific"}};
+    }
+
+    public Object[][] getTestData(String testName, String environment, String browser) {
+        // Browser-specific data
+        return new Object[][]{{"browser-specific"}};
+    }
+}
+
+// Runtime polymorphism in test execution
+public abstract class TestExecutor {
+    public abstract void executeTest();
+}
+
+public class SeleniumTestExecutor extends TestExecutor {
+    @Override
+    public void executeTest() {
+        // Selenium-specific implementation
+    }
+}
+
+public class APITestExecutor extends TestExecutor {
+    @Override
+    public void executeTest() {
+        // API-specific implementation
+    }
+}
+
+// Using polymorphism
+TestExecutor executor = new SeleniumTestExecutor();
+executor.executeTest(); // Executes Selenium test
+
+executor = new APITestExecutor();
+executor.executeTest(); // Executes API test
+```
+
+Application Under Test Example:
+```java
+// Polymorphism in e-commerce application
+public abstract class NotificationService {
+    public abstract void sendNotification(String message);
+}
+
+public class EmailNotification extends NotificationService {
+    @Override
+    public void sendNotification(String message) {
+        // Email sending logic
+    }
+}
+
+public class SMSNotification extends NotificationService {
+    @Override
+    public void sendNotification(String message) {
+        // SMS sending logic
+    }
+}
+
+public class PushNotification extends NotificationService {
+    @Override
+    public void sendNotification(String message) {
+        // Push notification logic
+    }
+}
+
+// Using different notification types
+NotificationService notification = new EmailNotification();
+notification.sendNotification("Order confirmed"); // Sends email
+
+notification = new SMSNotification();
+notification.sendNotification("Order confirmed"); // Sends SMS
+```
+
+### Q6: What is Abstraction and how is it achieved?
+A:
+Conceptual Explanation:
+- Hiding complex implementation details
+- Showing only necessary features
+- Achieved through:
+  * Abstract classes
+  * Interfaces
+- Benefits:
+  * Security
+  * Code organization
+  * Maintenance
+  * Reusability
+
+Java Example:
+```java
+// Abstract class
+public abstract class Vehicle {
+    protected String brand;
+
+    public Vehicle(String brand) {
+        this.brand = brand;
+    }
+
+    // Abstract method - must be implemented by subclasses
+    public abstract void start();
+
+    // Concrete method - can be used by subclasses
+    public void stop() {
+        System.out.println(brand + " is stopping");
+    }
+}
+
+// Interface
+public interface Flyable {
+    void fly();
+    int getMaxAltitude();
+}
+
+// Concrete class implementing both
+public class Airplane extends Vehicle implements Flyable {
+    public Airplane(String brand) {
+        super(brand);
+    }
+
+    @Override
+    public void start() {
+        System.out.println(brand + " airplane is starting engines");
+    }
+
+    @Override
+    public void fly() {
+        System.out.println(brand + " airplane is flying");
+    }
+
+    @Override
+    public int getMaxAltitude() {
+        return 35000;
+    }
+}
+```
+
+SDET Automation Example:
+```java
+// Abstract test framework
+public abstract class TestFramework {
+    protected WebDriver driver;
+
+    public abstract void initializeDriver();
+    public abstract void tearDown();
+
+    public void takeScreenshot(String name) {
+        // Common screenshot logic
+    }
+}
+
+// Abstract page object
+public abstract class BasePage {
+    protected WebDriver driver;
+    protected WebDriverWait wait;
+
+    public BasePage(WebDriver driver) {
+        this.driver = driver;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    }
+
+    protected abstract void isPageLoaded();
+
+    protected void waitForElement(By locator) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+}
+
+// Concrete implementation
+public class LoginPage extends BasePage {
+    private By usernameInput = By.id("username");
+
+    public LoginPage(WebDriver driver) {
+        super(driver);
+    }
+
+    @Override
+    protected void isPageLoaded() {
+        waitForElement(usernameInput);
+    }
+}
+```
+
+Application Under Test Example:
+```java
+// Abstract payment processor
+public abstract class PaymentProcessor {
+    protected double amount;
+
+    public PaymentProcessor(double amount) {
+        this.amount = amount;
+    }
+
+    public abstract void validate();
+    public abstract void process();
+    public abstract void confirm();
+
+    // Template method
+    public final void executePayment() {
+        validate();
+        process();
+        confirm();
+    }
+}
+
+// Concrete implementation
+public class CreditCardProcessor extends PaymentProcessor {
+    private String cardNumber;
+
+    public CreditCardProcessor(double amount, String cardNumber) {
+        super(amount);
+        this.cardNumber = cardNumber;
+    }
+
+    @Override
+    public void validate() {
+        // Card validation logic
+    }
+
+    @Override
+    public void process() {
+        // Card processing logic
+    }
+
+    @Override
+    public void confirm() {
+        // Confirmation logic
+    }
+}
+```
+
+### Q7: What is the difference between Abstract Class and Interface?
+A:
+Conceptual Explanation:
+- Abstract Class:
+  * Can have constructors
+  * Can have instance variables
+  * Can have concrete methods
+  * Single inheritance
+  * Can have access modifiers
+- Interface:
+  * No constructors
+  * Only static final variables
+  * All methods abstract (before Java 8)
+  * Multiple inheritance
+  * Can have default methods
+  * All methods public by default
+
+Java Example:
+```java
+// Abstract class
+public abstract class Logger {
+    protected String format;
+
+    public Logger(String format) {
+        this.format = format;
+    }
+
+    public abstract void log(String message);
+
+    protected String formatMessage(String message) {
+        return String.format(format, message);
+    }
+}
+
+// Interface
+public interface Loggable {
+    void log(String message);
+    void error(String message);
+    void warn(String message);
+
+    // Default method (Java 8+)
+    default void info(String message) {
+        System.out.println("INFO: " + message);
+    }
+}
+
+// Implementation
+public class FileLogger extends Logger implements Loggable {
+    public FileLogger() {
+        super("[%s] %s");
+    }
+
+    @Override
+    public void log(String message) {
+        System.out.println(formatMessage(message));
+    }
+
+    @Override
+    public void error(String message) {
+        System.out.println("ERROR: " + message);
+    }
+
+    @Override
+    public void warn(String message) {
+        System.out.println("WARN: " + message);
+    }
+}
+```
+
+SDET Automation Example:
+```java
+// Abstract test configuration
+public abstract class TestConfiguration {
+    protected String browser;
+    protected String environment;
+
+    public TestConfiguration(String browser, String environment) {
+        this.browser = browser;
+        this.environment = environment;
+    }
+
+    public abstract WebDriver createDriver();
+    public abstract void configureTest();
+}
+
+// Interface for test reporting
+public interface TestReporter {
+    void reportTestStart(String testName);
+    void reportTestPass(String testName);
+    void reportTestFail(String testName, Throwable error);
+
+    default void reportTestSkip(String testName) {
+        System.out.println("Test skipped: " + testName);
+    }
+}
+
+// Implementation
+public class SeleniumTestConfig extends TestConfiguration implements TestReporter {
+    public SeleniumTestConfig(String browser, String environment) {
+        super(browser, environment);
+    }
+
+    @Override
+    public WebDriver createDriver() {
+        // Driver creation logic
+        return null;
+    }
+
+    @Override
+    public void configureTest() {
+        // Test configuration logic
+    }
+
+    @Override
+    public void reportTestStart(String testName) {
+        // Test start reporting
+    }
+
+    @Override
+    public void reportTestPass(String testName) {
+        // Test pass reporting
+    }
+
+    @Override
+    public void reportTestFail(String testName, Throwable error) {
+        // Test fail reporting
+    }
+}
+```
+
+Application Under Test Example:
+```java
+// Abstract data access
+public abstract class DataAccess {
+    protected Connection connection;
+
+    public DataAccess(Connection connection) {
+        this.connection = connection;
+    }
+
+    public abstract void connect();
+    public abstract void disconnect();
+    public abstract void executeQuery(String query);
+}
+
+// Interface for data validation
+public interface DataValidator {
+    boolean validateData(Object data);
+    void logValidationError(String error);
+
+    default boolean isDataEmpty(Object data) {
+        return data == null;
+    }
+}
+
+// Implementation
+public class DatabaseAccess extends DataAccess implements DataValidator {
+    public DatabaseAccess(Connection connection) {
+        super(connection);
+    }
+
+    @Override
+    public void connect() {
+        // Connection logic
+    }
+
+    @Override
+    public void disconnect() {
+        // Disconnection logic
+    }
+
+    @Override
+    public void executeQuery(String query) {
+        // Query execution logic
+    }
+
+    @Override
+    public boolean validateData(Object data) {
+        // Data validation logic
+        return true;
+    }
+
+    @Override
+    public void logValidationError(String error) {
+        // Error logging logic
+    }
+}
+```
+
+### Q8: What is Method Overriding and Method Overloading?
+A:
+Conceptual Explanation:
+- Method Overriding:
+  * Runtime polymorphism
+  * Same method signature in parent and child
+  * Cannot reduce visibility
+  * Cannot throw broader exceptions
+  * @Override annotation recommended
+- Method Overloading:
+  * Compile-time polymorphism
+  * Same method name, different parameters
+  * Can change return type
+  * Can change access modifier
+  * Can throw different exceptions
+
+Java Example:
+```java
+// Method Overriding
+public class Animal {
+    public void makeSound() {
+        System.out.println("Animal makes sound");
+    }
+
+    protected void move() {
+        System.out.println("Animal moves");
+    }
+}
+
+public class Dog extends Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("Dog barks");
+    }
+
+    @Override
+    protected void move() {
+        System.out.println("Dog runs");
+    }
+}
+
+// Method Overloading
+public class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public double add(double a, double b) {
+        return a + b;
+    }
+
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
+
+    protected int add(int a, int b, int c, int d) {
+        return a + b + c + d;
+    }
+}
+```
+
+SDET Automation Example:
+```java
+// Method Overriding in Test Framework
+public class BaseTest {
+    public void setUp() {
+        System.out.println("Base setup");
+    }
+
+    protected void tearDown() {
+        System.out.println("Base teardown");
+    }
+}
+
+public class LoginTest extends BaseTest {
+    @Override
+    public void setUp() {
+        super.setUp();
+        System.out.println("Login test setup");
+    }
+
+    @Override
+    protected void tearDown() {
+        System.out.println("Login test teardown");
+        super.tearDown();
+    }
+}
+
+// Method Overloading in Page Objects
+public class LoginPage {
+    public void login(String username, String password) {
+        // Basic login
+    }
+
+    public void login(String username, String password, boolean rememberMe) {
+        // Login with remember me
+    }
+
+    public void login(String username, String password, String otp) {
+        // Login with OTP
+    }
+
+    protected void login(String username, String password, String otp, boolean rememberMe) {
+        // Login with all options
+    }
+}
+```
+
+Application Under Test Example:
+```java
+// Method Overriding in Payment Processing
+public class PaymentProcessor {
+    public void processPayment(double amount) {
+        System.out.println("Processing payment: " + amount);
+    }
+
+    protected void validatePayment(double amount) {
+        System.out.println("Validating payment: " + amount);
+    }
+}
+
+public class CreditCardProcessor extends PaymentProcessor {
+    @Override
+    public void processPayment(double amount) {
+        validatePayment(amount);
+        System.out.println("Processing credit card payment: " + amount);
+    }
+
+    @Override
+    protected void validatePayment(double amount) {
+        System.out.println("Validating credit card payment: " + amount);
+    }
+}
+
+// Method Overloading in Order Processing
+public class OrderProcessor {
+    public void processOrder(Order order) {
+        // Basic order processing
+    }
+
+    public void processOrder(Order order, boolean express) {
+        // Express order processing
+    }
+
+    public void processOrder(Order order, String priority) {
+        // Priority-based processing
+    }
+
+    protected void processOrder(Order order, boolean express, String priority) {
+        // Full order processing
+    }
+}
+```
+
+### Q9: What is Constructor Chaining?
+A:
+Conceptual Explanation:
+- Process of calling one constructor from another
+- Achieved using:
+  * this() - calls current class constructor
+  * super() - calls parent class constructor
+- Benefits:
+  * Code reuse
+  * Initialization flexibility
+  * Maintainability
+- Rules:
+  * Must be first statement in constructor
+  * Can't use both this() and super()
+  * Implicit super() if not specified
+
+Java Example:
+```java
+public class Person {
+    private String name;
+    private int age;
+
+    public Person() {
+        this("Unknown", 0);  // Calls two-parameter constructor
+    }
+
+    public Person(String name) {
+        this(name, 0);  // Calls two-parameter constructor
+    }
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+
+public class Employee extends Person {
+    private String department;
+
+    public Employee() {
+        super();  // Calls Person's no-arg constructor
+        this.department = "Unknown";
+    }
+
+    public Employee(String name) {
+        super(name);  // Calls Person's one-parameter constructor
+        this.department = "Unknown";
+    }
+
+    public Employee(String name, int age, String department) {
+        super(name, age);  // Calls Person's two-parameter constructor
+        this.department = department;
+    }
+}
+```
+
+SDET Automation Example:
+```java
+public class TestBase {
+    protected WebDriver driver;
+    protected String browser;
+
+    public TestBase() {
+        this("chrome");  // Default browser
+    }
+
+    public TestBase(String browser) {
+        this.browser = browser;
+        initializeDriver();
+    }
+
+    protected void initializeDriver() {
+        // Driver initialization logic
+    }
+}
+
+public class LoginTest extends TestBase {
+    private String environment;
+
+    public LoginTest() {
+        super();  // Calls TestBase's no-arg constructor
+        this.environment = "qa";
+    }
+
+    public LoginTest(String browser, String environment) {
+        super(browser);  // Calls TestBase's one-parameter constructor
+        this.environment = environment;
+    }
+}
+```
+
+Application Under Test Example:
+```java
+public class User {
+    private String username;
+    private String email;
+    private String role;
+
+    public User() {
+        this("guest", "guest@example.com", "USER");
+    }
+
+    public User(String username) {
+        this(username, username + "@example.com", "USER");
+    }
+
+    public User(String username, String email, String role) {
+        this.username = username;
+        this.email = email;
+        this.role = role;
+    }
+}
+
+public class AdminUser extends User {
+    private List<String> permissions;
+
+    public AdminUser() {
+        super("admin", "admin@example.com", "ADMIN");
+        this.permissions = new ArrayList<>();
+    }
+
+    public AdminUser(String username, List<String> permissions) {
+        super(username, username + "@example.com", "ADMIN");
+        this.permissions = permissions;
+    }
+}
+```
+
+### Q10: What are Access Modifiers in Java?
+A:
+Conceptual Explanation:
+- Control access to classes, methods, and variables
+- Types:
+  * public: Accessible everywhere
+  * protected: Accessible in same package and subclasses
+  * default (no modifier): Accessible in same package
+  * private: Accessible only in same class
+- Benefits:
+  * Encapsulation
+  * Security
+  * Code organization
+  * API design
+
+Java Example:
+```java
+public class AccessExample {
+    public String publicVar = "public";
+    protected String protectedVar = "protected";
+    String defaultVar = "default";
+    private String privateVar = "private";
+
+    public void publicMethod() {
+        System.out.println("Public method");
+    }
+
+    protected void protectedMethod() {
+        System.out.println("Protected method");
+    }
+
+    void defaultMethod() {
+        System.out.println("Default method");
+    }
+
+    private void privateMethod() {
+        System.out.println("Private method");
+    }
+}
+
+class SubClass extends AccessExample {
+    public void testAccess() {
+        System.out.println(publicVar);      // Accessible
+        System.out.println(protectedVar);   // Accessible
+        System.out.println(defaultVar);     // Accessible in same package
+        // System.out.println(privateVar);  // Not accessible
+
+        publicMethod();      // Accessible
+        protectedMethod();   // Accessible
+        defaultMethod();     // Accessible in same package
+        // privateMethod();  // Not accessible
+    }
+}
+```
+
+SDET Automation Example:
+```java
+public class TestFramework {
+    public WebDriver driver;
+    protected WebDriverWait wait;
+    String baseUrl;
+    private String configPath;
+
+    public TestFramework() {
+        this.driver = new ChromeDriver();
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        this.baseUrl = "http://localhost:8080";
+        this.configPath = "config.properties";
+    }
+
+    public void navigateTo(String url) {
+        driver.get(baseUrl + url);
+    }
+
+    protected void waitForElement(By locator) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+
+    void loadConfig() {
+        // Load configuration
+    }
+
+    private void initializeDriver() {
+        // Driver initialization logic
+    }
+}
+
+class TestCase extends TestFramework {
+    public void runTest() {
+        navigateTo("/login");           // Accessible
+        waitForElement(By.id("user"));  // Accessible
+        loadConfig();                   // Accessible in same package
+        // initializeDriver();          // Not accessible
+    }
+}
+```
+
+Application Under Test Example:
+```java
+public class UserService {
+    public User currentUser;
+    protected UserPreferences preferences;
+    String lastLoginTime;
+    private String securityToken;
+
+    public UserService() {
+        this.currentUser = null;
+        this.preferences = new UserPreferences();
+        this.lastLoginTime = null;
+        this.securityToken = generateToken();
+    }
+
+    public void login(String username, String password) {
+        // Login logic
+    }
+
+    protected void updatePreferences(UserPreferences newPrefs) {
+        this.preferences = newPrefs;
+    }
+
+    void updateLastLogin() {
+        this.lastLoginTime = LocalDateTime.now().toString();
+    }
+
+    private String generateToken() {
+        // Token generation logic
+        return UUID.randomUUID().toString();
+    }
+}
+
+class UserManager extends UserService {
+    public void manageUser() {
+        login("admin", "pass");         // Accessible
+        updatePreferences(null);        // Accessible
+        updateLastLogin();             // Accessible in same package
+        // generateToken();            // Not accessible
+    }
+}
+```
+
+### Q11: What are Common Design Patterns in Java and how are they used in SDET?
+A:
+Conceptual Explanation:
+- Design Patterns: Reusable solutions to common problems
+- Types:
+  * Creational: Object creation mechanisms
+  * Structural: Object composition
+  * Behavioral: Object interaction
+- Benefits:
+  * Code reusability
+  * Maintainability
+  * Scalability
+  * Testability
+
+Java Example:
+```java
+// Singleton Pattern
+public class DatabaseConnection {
+    private static DatabaseConnection instance;
+    private Connection connection;
+
+    private DatabaseConnection() {
+        // Private constructor
+    }
+
+    public static synchronized DatabaseConnection getInstance() {
+        if (instance == null) {
+            instance = new DatabaseConnection();
+        }
+        return instance;
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+}
+
+// Factory Pattern
+public interface PaymentProcessor {
+    void processPayment(double amount);
+}
+
+public class PaymentFactory {
+    public static PaymentProcessor createPayment(String type) {
+        switch (type.toLowerCase()) {
+            case "creditcard":
+                return new CreditCardProcessor();
+            case "paypal":
+                return new PayPalProcessor();
+            default:
+                throw new IllegalArgumentException("Invalid payment type");
+        }
+    }
+}
+
+// Builder Pattern
+public class User {
+    private String username;
+    private String email;
+    private String role;
+    private List<String> permissions;
+
+    private User(UserBuilder builder) {
+        this.username = builder.username;
+        this.email = builder.email;
+        this.role = builder.role;
+        this.permissions = builder.permissions;
+    }
+
+    public static class UserBuilder {
+        private String username;
+        private String email;
+        private String role;
+        private List<String> permissions = new ArrayList<>();
+
+        public UserBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public UserBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public UserBuilder role(String role) {
+            this.role = role;
+            return this;
+        }
+
+        public UserBuilder addPermission(String permission) {
+            this.permissions.add(permission);
+            return this;
+        }
+
+        public User build() {
+            return new User(this);
+        }
+    }
+}
+```
+
+SDET Automation Example:
+```java
+// Page Object Model (Structural Pattern)
+public abstract class BasePage {
+    protected WebDriver driver;
+    protected WebDriverWait wait;
+
+    public BasePage(WebDriver driver) {
+        this.driver = driver;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    }
+
+    protected abstract void isPageLoaded();
+}
+
+public class LoginPage extends BasePage {
+    private By usernameInput = By.id("username");
+    private By passwordInput = By.id("password");
+    private By loginButton = By.id("login");
+
+    public LoginPage(WebDriver driver) {
+        super(driver);
+    }
+
+    @Override
+    protected void isPageLoaded() {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(usernameInput));
+    }
+
+    public void login(String username, String password) {
+        driver.findElement(usernameInput).sendKeys(username);
+        driver.findElement(passwordInput).sendKeys(password);
+        driver.findElement(loginButton).click();
+    }
+}
+
+// Factory Pattern for WebDriver
+public class WebDriverFactory {
+    public static WebDriver createDriver(String browser) {
+        switch (browser.toLowerCase()) {
+            case "chrome":
+                return new ChromeDriver();
+            case "firefox":
+                return new FirefoxDriver();
+            case "edge":
+                return new EdgeDriver();
+            default:
+                throw new IllegalArgumentException("Invalid browser type");
+        }
+    }
+}
+
+// Builder Pattern for Test Data
+public class TestData {
+    private String username;
+    private String password;
+    private String environment;
+    private Map<String, String> parameters;
+
+    private TestData(TestDataBuilder builder) {
+        this.username = builder.username;
+        this.password = builder.password;
+        this.environment = builder.environment;
+        this.parameters = builder.parameters;
+    }
+
+    public static class TestDataBuilder {
+        private String username;
+        private String password;
+        private String environment;
+        private Map<String, String> parameters = new HashMap<>();
+
+        public TestDataBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public TestDataBuilder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public TestDataBuilder environment(String environment) {
+            this.environment = environment;
+            return this;
+        }
+
+        public TestDataBuilder addParameter(String key, String value) {
+            this.parameters.put(key, value);
+            return this;
+        }
+
+        public TestData build() {
+            return new TestData(this);
+        }
+    }
+}
+```
+
+Application Under Test Example:
+```java
+// Observer Pattern for Event Handling
+public interface EventListener {
+    void onEvent(String eventType, Object data);
+}
+
+public class EventManager {
+    private Map<String, List<EventListener>> listeners = new HashMap<>();
+
+    public void subscribe(String eventType, EventListener listener) {
+        listeners.computeIfAbsent(eventType, k -> new ArrayList<>()).add(listener);
+    }
+
+    public void notify(String eventType, Object data) {
+        listeners.getOrDefault(eventType, new ArrayList<>())
+                .forEach(listener -> listener.onEvent(eventType, data));
+    }
+}
+
+// Strategy Pattern for Payment Processing
+public interface PaymentStrategy {
+    void processPayment(double amount);
+}
+
+public class CreditCardStrategy implements PaymentStrategy {
+    @Override
+    public void processPayment(double amount) {
+        // Credit card processing logic
+    }
+}
+
+public class PayPalStrategy implements PaymentStrategy {
+    @Override
+    public void processPayment(double amount) {
+        // PayPal processing logic
+    }
+}
+
+public class PaymentContext {
+    private PaymentStrategy strategy;
+
+    public void setStrategy(PaymentStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public void executePayment(double amount) {
+        strategy.processPayment(amount);
+    }
+}
+
+// Template Method Pattern for Order Processing
+public abstract class OrderProcessor {
+    public final void processOrder() {
+        validateOrder();
+        calculateTotal();
+        processPayment();
+        sendConfirmation();
+    }
+
+    protected abstract void validateOrder();
+    protected abstract void calculateTotal();
+    protected abstract void processPayment();
+
+    protected void sendConfirmation() {
+        // Common confirmation logic
+    }
+}
+
+public class OnlineOrderProcessor extends OrderProcessor {
+    @Override
+    protected void validateOrder() {
+        // Online order validation
+    }
+
+    @Override
+    protected void calculateTotal() {
+        // Online order calculation
+    }
+
+    @Override
+    protected void processPayment() {
+        // Online payment processing
+    }
+}
+```
