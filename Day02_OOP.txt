@@ -5,10 +5,12 @@
 ### Q1: What are the four main OOP concepts in Java?
 A:
 Conceptual Explanation:
-- **Encapsulation**: Binding data and behavior together, restricting access
+- **Encapsulation**: Binding data and behavior together, restricting access.
+Data hiding by making variables private and giving public getter/setter access.
+- **Inheritance**: Reusing code through parent-child/super-sub relationships
 - **Abstraction**: Hiding complex implementation details
-- **Inheritance**: Reusing code through parent-child relationships
-- **Polymorphism**: One interface, multiple implementations
+- **Polymorphism**: One interface, multiple implementations. Variable can be parent class/interface type and object is any sub class type.
+WebDriver driver = new ChromeDriver..new Safar...
 
 Java Example:
 ```java
@@ -46,6 +48,9 @@ public class LoginPage {
     private By usernameInput = By.id("username");
     private By passwordInput = By.id("password");
 
+    @FindBy(id="username")
+    private WebElement userNameField;
+
     public void login(String username, String password) {
         // Implementation hidden
     }
@@ -71,6 +76,8 @@ test.setUpTest();
 ```
 
 Application Under Test Example:
+Example from application that we are currently testing.
+Below example can be used as API, UI
 ```java
 // E-commerce Application
 public abstract class PaymentProcessor {
@@ -95,7 +102,7 @@ public class PayPalPayment extends PaymentProcessor {
 ### Q2: What is the difference between a class and an object?
 A:
 Conceptual Explanation:
-- Class: Blueprint/template that defines structure and behavior
+- Class: Blueprint/template that defines structure,data and behavior
 - Object: Instance of a class with its own state
 - Class is logical, object is physical
 - Multiple objects can be created from one class
@@ -145,6 +152,7 @@ TestCase searchTest = new TestCase("Search", "Verify search functionality");
 ```
 
 Application Under Test Example:
+We have UserAPI -> where I send request and get user data...
 ```java
 // User class definition
 public class User {
@@ -269,7 +277,7 @@ Conceptual Explanation:
   * Multilevel inheritance: Chain of inheritance
   * Hierarchical inheritance: Multiple classes extend one class
   * Multiple inheritance: Through interfaces
-- Benefits: Code reuse, method overriding, polymorphism
+- Benefits: Code reuse, method overriding, polymorphism, organized code
 
 Java Example:
 ```java
@@ -326,6 +334,7 @@ public abstract class BaseTest {
             driver.quit();
         }
     }
+    //methods
 }
 
 // Specific test class
@@ -339,6 +348,10 @@ public class LoginTest extends BaseTest {
         Assert.assertTrue(loginPage.isLoggedIn());
     }
 }
+
+//BasePage class:
+    I store all elements and methods that are applicable for all the pages
+    And other page object classes extend the basePage to reuse the WebElements and methods
 ```
 
 Application Under Test Example:
@@ -388,6 +401,7 @@ public class PayPalPayment extends Payment {
 A:
 Conceptual Explanation:
 - Ability of an object to take many forms
+- Ability of using parent type as reference and object type as any subclass
 - Types:
   * Compile-time polymorphism (Method overloading)
   * Runtime polymorphism (Method overriding)
@@ -492,7 +506,7 @@ executor.executeTest(); // Executes API test
 
 Application Under Test Example:
 ```java
-// Polymorphism in e-commerce application
+// Polymorphism in e-commerce/CRM application
 public abstract class NotificationService {
     public abstract void sendNotification(String message);
 }
@@ -591,8 +605,10 @@ public class Airplane extends Vehicle implements Flyable {
 SDET Automation Example:
 ```java
 // Abstract test framework
-public abstract class TestFramework {
+public abstract class TestBase {
     protected WebDriver driver;
+
+    //set up tests,and tear down tests
 
     public abstract void initializeDriver();
     public abstract void tearDown();
@@ -606,6 +622,7 @@ public abstract class TestFramework {
 public abstract class BasePage {
     protected WebDriver driver;
     protected WebDriverWait wait;
+    //WebElements
 
     public BasePage(WebDriver driver) {
         this.driver = driver;
@@ -684,6 +701,9 @@ public class CreditCardProcessor extends PaymentProcessor {
 
 ### Q7: What is the difference between Abstract Class and Interface?
 A:
+Both - we cannot create objects
+Class can extend only one abstract class and can implement multiple interfaces
+
 Conceptual Explanation:
 - Abstract Class:
   * Can have constructors
@@ -696,7 +716,7 @@ Conceptual Explanation:
   * Only static final variables
   * All methods abstract (before Java 8)
   * Multiple inheritance
-  * Can have default methods
+  * Can have default, private, static methods
   * All methods public by default
 
 Java Example:
@@ -767,7 +787,7 @@ public abstract class TestConfiguration {
     public abstract void configureTest();
 }
 
-// Interface for test reporting
+// Interface for test reporting - Cucumber Reports, ExtentReport, Allure report
 public interface TestReporter {
     void reportTestStart(String testName);
     void reportTestPass(String testName);
@@ -876,7 +896,7 @@ A:
 Conceptual Explanation:
 - Method Overriding:
   * Runtime polymorphism
-  * Same method signature in parent and child
+  * Same method signature(Same name and same params) in parent and child
   * Cannot reduce visibility
   * Cannot throw broader exceptions
   * @Override annotation recommended
@@ -948,7 +968,7 @@ public class BaseTest {
 public class LoginTest extends BaseTest {
     @Override
     public void setUp() {
-        super.setUp();
+        super.setUp(); //call super class version of setUp()
         System.out.println("Login test setup");
     }
 
@@ -1028,6 +1048,8 @@ public class OrderProcessor {
 ### Q9: What is Constructor Chaining?
 A:
 Conceptual Explanation:
+- Constructor is special method that runs automatically when the object is created from a class
+- It has same name as class name and no return type
 - Process of calling one constructor from another
 - Achieved using:
   * this() - calls current class constructor
@@ -1082,7 +1104,11 @@ public class Employee extends Person {
 ```
 
 SDET Automation Example:
+
+Page object classes can have constructor that initializes elements
+
 ```java
+
 public class TestBase {
     protected WebDriver driver;
     protected String browser;
@@ -1117,6 +1143,7 @@ public class LoginTest extends TestBase {
 ```
 
 Application Under Test Example:
+POJO/Model classes
 ```java
 public class User {
     private String username;
@@ -1160,7 +1187,7 @@ Conceptual Explanation:
 - Types:
   * public: Accessible everywhere
   * protected: Accessible in same package and subclasses
-  * default (no modifier): Accessible in same package
+  * default (no modifier): Accessible in same package/Package - private
   * private: Accessible only in same class
 - Benefits:
   * Encapsulation
@@ -1210,7 +1237,7 @@ class SubClass extends AccessExample {
 
 SDET Automation Example:
 ```java
-public class TestFramework {
+public class TestBase {
     public WebDriver driver;
     protected WebDriverWait wait;
     String baseUrl;
@@ -1251,6 +1278,8 @@ class TestCase extends TestFramework {
 ```
 
 Application Under Test Example:
+Service classes are used for application logic and steps.
+Page object class -> Service class for User actions -> Tests(Call UserActions methods and assertions)
 ```java
 public class UserService {
     public User currentUser;
@@ -1292,6 +1321,16 @@ class UserManager extends UserService {
     }
 }
 ```
+What kind of built in interfaces do you use?
+List, Map, Set are interfaces from collections framework
+WebDriver, WebDriverWait are some interfaces part of Selenium
+Response is interface from RestAssured
+Connection, Statement, RecordSet are JDBC interfaces
+
+When would you create interface in your framework?
+When there is a functionality with different behaviors depending on Usertype or Module,
+I can create interface and add classes that implement automation steps that interface based on UserType etc
+When we need multiple inheritance with abstract methods
 
 ### Q11: What are Common Design Patterns in Java and how are they used in SDET?
 A:
@@ -1309,7 +1348,10 @@ Conceptual Explanation:
 
 Java Example:
 ```java
-// Singleton Pattern
+// Singleton Pattern - ensures only single object can be created from a class.
+//1) private static variable for our single object 2) public static method that returns same object
+//3)Private constructor
+
 public class DatabaseConnection {
     private static DatabaseConnection instance;
     private Connection connection;
@@ -1330,7 +1372,8 @@ public class DatabaseConnection {
     }
 }
 
-// Factory Pattern
+// Factory Pattern - creates and returns different type of objects based on parameter:
+//WebDriverFactory.getDriver("chrome");
 public interface PaymentProcessor {
     void processPayment(double amount);
 }
@@ -1348,7 +1391,14 @@ public class PaymentFactory {
     }
 }
 
-// Builder Pattern
+Builder Pattern - chain object creation.
+
+The Builder Pattern is used to construct a complex object step-by-step. It separates the construction of a complex object
+from its representation, allowing the same construction process to create different representations.
+
+This pattern is especially useful when an object has many optional fields or when you want to create immutable objects.
+
+Example:
 public class User {
     private String username;
     private String email;
@@ -1393,6 +1443,18 @@ public class User {
         }
     }
 }
+
+Usage:
+User user = new User.UserBuilder()
+                 .setName("Alice")
+                 .setEmail("alice@example.com")
+                 .setAge(30)
+                 .build();
+
+User user2 = new User.UserBuilder()
+                 .setName("Alice")
+                 .setAge(30)
+                 .build();
 ```
 
 SDET Automation Example:
@@ -1494,89 +1556,63 @@ public class TestData {
 }
 ```
 
-Application Under Test Example:
+Q: How would you use the Builder Pattern for test data?
+A:
+- Create complex objects step by step
+- Make object creation more readable
+- Handle optional parameters
+
+Example:
 ```java
-// Observer Pattern for Event Handling
-public interface EventListener {
-    void onEvent(String eventType, Object data);
-}
+public class TestUser {
+    private String username;
+    private String password;
+    private String email;
+    private String role;
 
-public class EventManager {
-    private Map<String, List<EventListener>> listeners = new HashMap<>();
-
-    public void subscribe(String eventType, EventListener listener) {
-        listeners.computeIfAbsent(eventType, k -> new ArrayList<>()).add(listener);
+    private TestUser(Builder builder) {
+        this.username = builder.username;
+        this.password = builder.password;
+        this.email = builder.email;
+        this.role = builder.role;
     }
 
-    public void notify(String eventType, Object data) {
-        listeners.getOrDefault(eventType, new ArrayList<>())
-                .forEach(listener -> listener.onEvent(eventType, data));
-    }
-}
+    public static class Builder {
+        private String username;
+        private String password;
+        private String email;
+        private String role;
 
-// Strategy Pattern for Payment Processing
-public interface PaymentStrategy {
-    void processPayment(double amount);
-}
+        public Builder username(String username) {
+            this.username = username;
+            return this;
+        }
 
-public class CreditCardStrategy implements PaymentStrategy {
-    @Override
-    public void processPayment(double amount) {
-        // Credit card processing logic
-    }
-}
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
 
-public class PayPalStrategy implements PaymentStrategy {
-    @Override
-    public void processPayment(double amount) {
-        // PayPal processing logic
-    }
-}
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
 
-public class PaymentContext {
-    private PaymentStrategy strategy;
+        public Builder role(String role) {
+            this.role = role;
+            return this;
+        }
 
-    public void setStrategy(PaymentStrategy strategy) {
-        this.strategy = strategy;
-    }
-
-    public void executePayment(double amount) {
-        strategy.processPayment(amount);
+        public TestUser build() {
+            return new TestUser(this);
+        }
     }
 }
 
-// Template Method Pattern for Order Processing
-public abstract class OrderProcessor {
-    public final void processOrder() {
-        validateOrder();
-        calculateTotal();
-        processPayment();
-        sendConfirmation();
-    }
-
-    protected abstract void validateOrder();
-    protected abstract void calculateTotal();
-    protected abstract void processPayment();
-
-    protected void sendConfirmation() {
-        // Common confirmation logic
-    }
-}
-
-public class OnlineOrderProcessor extends OrderProcessor {
-    @Override
-    protected void validateOrder() {
-        // Online order validation
-    }
-
-    @Override
-    protected void calculateTotal() {
-        // Online order calculation
-    }
-
-    @Override
-    protected void processPayment() {
-        // Online payment processing
-    }
-}
-```
+// Usage
+TestUser user = new TestUser.Builder()
+    .username("testuser")
+    .password("testpass")
+    .email("test@example.com")
+    .role("admin")
+    .build();
