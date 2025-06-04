@@ -1,0 +1,449 @@
+# Java Collections Framework - Questions and Answers
+
+## 1. Generics and Type Safety
+
+### Q1: What are Generics in Java and why are they important in Collections?
+A:
+Generics provide type safety and eliminate the need for type casting. They allow you to specify the type of objects that a collection can hold.
+
+Example:
+```java
+// Without generics
+List list = new ArrayList();
+list.add("Hello");
+String str = (String) list.get(0); // Type casting needed
+
+// With generics
+List<String> genericList = new ArrayList<>();
+genericList.add("Hello");
+String genericStr = genericList.get(0); // No type casting needed
+```
+
+### Q2: What is the difference between raw types and generic types?
+A:
+Raw types are collections without type parameters, while generic types specify the type of elements they can hold.
+
+Example:
+```java
+// Raw type - not recommended
+List rawList = new ArrayList();
+rawList.add("String");
+rawList.add(123); // No type checking
+
+// Generic type - recommended
+List<String> genericList = new ArrayList<>();
+genericList.add("String");
+// genericList.add(123); // Compile-time error
+```
+
+## 2. List Interface and Implementations
+
+### Q3: What are the main List implementations and their differences?
+A:
+
+1. ArrayList:
+```java
+List<String> arrayList = new ArrayList<>();
+arrayList.add("First");
+arrayList.add("Second");
+arrayList.add(1, "Middle"); // Insert at index
+System.out.println(arrayList.get(0)); // Fast random access
+```
+
+2. LinkedList:
+```java
+List<String> linkedList = new LinkedList<>();
+linkedList.add("First");
+linkedList.addFirst("Start");
+linkedList.addLast("End");
+// Better for frequent insertions/deletions
+```
+
+3. Vector:
+```java
+List<String> vector = new Vector<>();
+vector.add("First");
+// Thread-safe but slower than ArrayList
+```
+
+### Q4: How do you iterate through a List?
+A:
+```java
+List<String> list = new ArrayList<>();
+list.add("One");
+list.add("Two");
+list.add("Three");
+
+// Using for-each loop
+for (String item : list) {
+    System.out.println(item);
+}
+
+// Using Iterator
+Iterator<String> iterator = list.iterator();
+while (iterator.hasNext()) {
+    String item = iterator.next();
+    if (item.equals("Two")) {
+        iterator.remove(); // Safe way to remove during iteration
+    }
+}
+
+// Using ListIterator (bidirectional)
+ListIterator<String> listIterator = list.listIterator();
+while (listIterator.hasNext()) {
+    String item = listIterator.next();
+    if (item.equals("Three")) {
+        listIterator.previous(); // Can go backwards
+    }
+}
+```
+
+## 3. Set Interface and Implementations
+
+### Q5: What are the main Set implementations and their characteristics?
+A:
+
+1. HashSet:
+```java
+Set<String> hashSet = new HashSet<>();
+hashSet.add("Apple");
+hashSet.add("Banana");
+hashSet.add("Apple"); // Duplicate ignored
+// No ordering guarantee
+```
+
+2. LinkedHashSet:
+```java
+Set<String> linkedHashSet = new LinkedHashSet<>();
+linkedHashSet.add("First");
+linkedHashSet.add("Second");
+// Maintains insertion order
+```
+
+3. TreeSet:
+```java
+Set<String> treeSet = new TreeSet<>();
+treeSet.add("Banana");
+treeSet.add("Apple");
+// Natural ordering (alphabetical)
+```
+
+### Q6: How do you read and process elements from a Set?
+A:
+```java
+Set<String> set = new HashSet<>();
+set.add("One");
+set.add("Two");
+set.add("Three");
+
+// Using for-each
+for (String item : set) {
+    System.out.println(item);
+}
+
+// Using stream/forEach method
+set.stream()
+   .filter(s -> s.length() > 3)
+   .forEach(System.out::println);
+
+// Using iterator
+Iterator<String> iterator = set.iterator();
+while (iterator.hasNext()) {
+    String item = iterator.next();
+    // Process item
+}
+```
+
+## 4. Queue Interface and Implementations
+
+### Q7: What are the main Queue implementations and their use cases?
+A:
+
+1. PriorityQueue:
+```java
+Queue<String> priorityQueue = new PriorityQueue<>();
+priorityQueue.offer("High");
+priorityQueue.offer("Medium");
+priorityQueue.offer("Low");
+// Natural ordering
+```
+
+2. ArrayDeque:
+```java
+Deque<String> arrayDeque = new ArrayDeque<>();
+arrayDeque.addFirst("First");
+arrayDeque.addLast("Last");
+// Double-ended queue
+```
+
+### Q8: How do you process elements in a Queue?
+A:
+```java
+Queue<String> queue = new LinkedList<>();
+queue.offer("First");
+queue.offer("Second");
+queue.offer("Third");
+
+// Process elements
+while (!queue.isEmpty()) {
+    String element = queue.poll();//removes element
+    System.out.println("Processing: " + element);
+}
+
+// Check without removing
+String peek = queue.peek();
+```
+
+## 5. Map Interface and Implementations
+
+### Q9: What are the main Map implementations and their differences?
+A:
+
+1. HashMap:
+```java
+Map<String, Integer> hashMap = new HashMap<>();
+hashMap.put("One", 1);
+hashMap.put("Two", 2);
+// No ordering guarantee
+```
+
+2. LinkedHashMap:
+```java
+Map<String, Integer> linkedHashMap = new LinkedHashMap<>();
+linkedHashMap.put("First", 1);
+linkedHashMap.put("Second", 2);
+// Maintains insertion order
+```
+
+3. TreeMap:
+```java
+Map<String, Integer> treeMap = new TreeMap<>();
+treeMap.put("Banana", 2);
+treeMap.put("Apple", 1);
+// Natural ordering by keys
+```
+
+### Q10: How do you iterate through a Map?
+A:
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put("One", 1);
+map.put("Two", 2);
+map.put("Three", 3);
+
+// Using entrySet
+for (Map.Entry<String, Integer> entry : map.entrySet()) {
+    System.out.println(entry.getKey() + ": " + entry.getValue());
+}
+
+// Using keySet
+for (String key : map.keySet()) {
+    System.out.println(key + ": " + map.get(key));
+}
+
+// Using forEach
+map.forEach((key, value) ->
+    System.out.println(key + ": " + value)
+);
+```
+
+## 6. Collections Utility Class
+
+### Q11: What are the main utility methods in the Collections class?
+A:
+```java
+List<String> list = new ArrayList<>();
+list.add("Banana");
+list.add("Apple");
+list.add("Cherry");
+
+// Sorting
+Collections.sort(list);
+System.out.println("Sorted: " + list);
+
+// Reversing
+Collections.reverse(list);
+System.out.println("Reversed: " + list);
+
+// Shuffling
+Collections.shuffle(list);
+System.out.println("Shuffled: " + list);
+
+// Finding min/max
+String min = Collections.min(list);
+String max = Collections.max(list);
+
+// Creating unmodifiable collections
+List<String> unmodifiable = Collections.unmodifiableList(list);
+// unmodifiable.add("New"); // Throws UnsupportedOperationException
+```
+
+## 7. Practical Examples
+
+### Q12: How do you use Collections in real-world scenarios?
+A:
+
+1. Grouping People:
+```java
+class Person {
+    private String name;
+    private int age;
+    private String city;
+}
+
+List<Person> people = new ArrayList<>();
+// Add people...
+
+// Group by city
+Map<String, List<Person>> peopleByCity = people.stream()
+    .collect(Collectors.groupingBy(Person::getCity));
+
+// Find average age by city
+Map<String, Double> avgAgeByCity = people.stream()
+    .collect(Collectors.groupingBy(
+        Person::getCity,
+        Collectors.averagingInt(Person::getAge)
+    ));
+```
+
+2. Country Data Processing:
+```java
+class Country {
+    private String name;
+    private String capital;
+    private long population;
+}
+
+List<Country> countries = new ArrayList<>();
+// Add countries...
+
+// Find most populous country
+Country mostPopulous = countries.stream()
+    .max(Comparator.comparingLong(Country::getPopulation))
+    .orElse(null);
+
+// Group by continent
+Map<String, List<Country>> countriesByContinent = countries.stream()
+    .collect(Collectors.groupingBy(Country::getContinent));
+```
+
+### Q13: How do you handle concurrent modifications in Collections?
+A:
+```java
+// Using synchronized collections
+List<String> syncList = Collections.synchronizedList(new ArrayList<>());
+Map<String, String> syncMap = Collections.synchronizedMap(new HashMap<>());
+
+// Using concurrent collections
+ConcurrentHashMap<String, String> concurrentMap = new ConcurrentHashMap<>();
+CopyOnWriteArrayList<String> concurrentList = new CopyOnWriteArrayList<>();
+
+// Using thread-safe operations
+synchronized (syncList) {
+    for (String item : syncList) {
+        // Safe to modify
+        syncList.remove(item);
+    }
+}
+```
+
+### Q14: What are the best practices when working with Collections?
+A:
+1. Choose the right collection type:
+   - ArrayList for random access
+   - LinkedList for frequent insertions/deletions
+   - HashSet for unique elements
+   - TreeSet for sorted elements
+   - HashMap for key-value pairs
+   - TreeMap for sorted keys
+
+2. Use generics to ensure type safety:
+```java
+List<String> strings = new ArrayList<>();  // Good
+List strings = new ArrayList();           // Avoid
+```
+
+3. Use interface types for declarations:
+```java
+List<String> list = new ArrayList<>();    // Good
+ArrayList<String> list = new ArrayList<>(); // Avoid
+```
+
+
+5. Use streams for complex operations:
+```java
+// Good
+List<String> filtered = list.stream()
+    .filter(s -> s.length() > 5)
+    .collect(Collectors.toList());
+
+// Avoid
+List<String> filtered = new ArrayList<>();
+for (String s : list) {
+    if (s.length() > 5) {
+        filtered.add(s);
+    }
+}
+```
+
+How to Compare Data from Different Sources?
+A:
+
+```java
+// POJO for User data
+class User {
+    private String id;
+    private String name;
+    private String email;
+
+    // Constructor, getters, setters, equals, hashCode
+}
+
+// Compare data from different sources
+@Test
+public void compareUserData() {
+    // Get data from UI
+    List<User> uiUsers = driver.findElements(By.cssSelector("tr.user-row"))
+        .stream()
+        .map(row -> new User(
+            row.findElement(By.cssSelector(".id")).getText(),
+            row.findElement(By.cssSelector(".name")).getText(),
+            row.findElement(By.cssSelector(".email")).getText()
+        ))
+        .collect(Collectors.toList());
+
+    // Get data from API
+    Response response = given().get("/api/users");
+    //deserialization (json -> java object)
+    List<User> apiUsers = response.jsonPath().getList("", User.class);
+
+    // Get data from DB
+    List<User> dbUsers = jdbcTemplate.query(
+        "SELECT id, name, email FROM users",
+        (rs, rowNum) -> new User(
+            rs.getString("id"),
+            rs.getString("name"),
+            rs.getString("email")
+        )
+    );
+
+    // Compare using Sets
+    Set<User> uiSet = new HashSet<>(uiUsers);
+    Set<User> apiSet = new HashSet<>(apiUsers);
+    Set<User> dbSet = new HashSet<>(dbUsers);
+
+    // Verify all sources have same data
+    Assert.assertTrue(uiSet.equals(apiSet) && apiSet.equals(dbSet),
+        "Data mismatch between UI, API and DB");
+
+    // Find differences if any
+    Set<User> onlyInUI = new HashSet<>(uiSet);
+    onlyInUI.removeAll(apiSet);
+    System.out.println("Users only in UI: " + onlyInUI);
+}
+```
+Test data:
+Map<String, String> testCase1 = new HashMap<>();
+testCase1.put("username", "user1");
+testCase1.put("password", "pass1");
+testCase1.put("expected", "success");
