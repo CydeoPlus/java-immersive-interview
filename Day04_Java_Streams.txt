@@ -4,8 +4,8 @@
 
 ### Q1: What are Java Streams and why use them?
 A:
+They are used for Functional programming in Java for data collections processing. Introduced from Java 8.
 Streams are a sequence of elements supporting sequential and parallel aggregate operations.
-They are used for Functional programming in Java for data collections processing
 
 Key Benefits:
 - Easy parallel processing
@@ -25,10 +25,10 @@ for (String name : names) {
 }
 
 // Using streams
-List<String> streamedNames = names.stream()
-    .filter(name -> name.length() > 3)    // Intermediate operation
-    .map(String::toUpperCase)             // Intermediate operation
-    .collect(Collectors.toList());        // Terminal operation
+List<String> streamedNames = names.stream() //1) Source of stream
+    .filter(name -> name.length() > 3)    // 2) Intermediate operation
+    .map(String::toUpperCase)             // 2) Intermediate operation
+    .collect(Collectors.toList());        // 3) Return value/Terminal operation
 
 What's the difference between method references and lambda expressions?
 A:
@@ -87,8 +87,6 @@ When to use which:
   * Need to capture variables
   * Need to perform conditional logic
   * Method reference would be less clear
-
-
 
 ### Q2: What are the main types of Stream operations?
 A:
@@ -270,6 +268,26 @@ int sum = numbers.stream()
 Optional<Integer> max = numbers.stream()
     .reduce(Integer::max);     // accumulator only
 
+// Optional is a container object that may or may not contain a value
+// It helps avoid NullPointerException by forcing you to handle the case when no value is present
+// Common Optional methods:
+// - isPresent(): checks if value exists
+// - get(): gets the value (throws NoSuchElementException if empty)
+// - orElse(): provides default value if empty
+// - ifPresent(): executes code if value exists
+
+// Example of handling Optional:
+first.ifPresent(name -> System.out.println("Found: " + name));
+// or
+String result = first.orElse("No name found");
+// or
+String result2 = first.orElseGet(() -> "No name found");
+// or
+first.ifPresentOrElse(
+    name -> System.out.println("Found: " + name),
+    () -> System.out.println("No name found")
+);
+
 3. Match Operations:
 
 List<String> names = Arrays.asList("John", "Alice", "Bob");
@@ -317,7 +335,7 @@ A:
 // Get all links and filter by text
 List<WebElement> links = driver.findElements(By.tagName("a"));
 List<String> filteredLinks = links.stream()
-    .map(WebElement::getText)
+    .map(WebElement::getText) //get texts for links
     .filter(text -> text.contains("Login"))
     .collect(Collectors.toList());
 
