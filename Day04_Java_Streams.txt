@@ -1,0 +1,437 @@
+# Java Streams - Questions and Answers (Java 17)
+
+## 1. Stream Basics
+
+### Q1: What are Java Streams and why use them?
+A:
+Streams are a sequence of elements supporting sequential and parallel aggregate operations.
+They are used for Functional programming in Java for data collections processing
+
+Key Benefits:
+- Easy parallel processing
+- Improved readability
+- Chain of operations
+
+Example:
+
+List<String> names = Arrays.asList("John", "Alice", "Bob", "Charlie");
+
+// Traditional approach
+List<String> filteredNames = new ArrayList<>();
+for (String name : names) {
+    if (name.length() > 3) {
+        filteredNames.add(name.toUpperCase());
+    }
+}
+
+// Using streams
+List<String> streamedNames = names.stream()
+    .filter(name -> name.length() > 3)    // Intermediate operation
+    .map(String::toUpperCase)             // Intermediate operation
+    .collect(Collectors.toList());        // Terminal operation
+
+What's the difference between method references and lambda expressions?
+A:
+Method references (::) and lambda expressions (->) are two ways to pass behavior in Java streams.
+
+1. Method References (::):
+- Shorter, more readable syntax
+- Direct reference to existing methods
+- Used when lambda just calls a single method
+- Types: static, instance, constructor, and arbitrary object
+
+Example:
+```
+// Method Reference
+names.stream()
+    .map(String::toUpperCase)     // Static method reference
+    .forEach(System.out::println); // Instance method reference
+
+// Equivalent Lambda
+names.stream()
+    .map(name -> name.toUpperCase())
+    .forEach(name -> System.out.println(name));
+```
+
+2. Lambda Expressions (->):
+- More flexible
+- Can contain multiple statements
+- Used when you need to perform multiple operations
+- Can capture variables from enclosing scope
+
+Example:
+```
+// Lambda with multiple operations
+names.stream()
+    .map(name -> {
+        String upper = name.toUpperCase();
+        return upper + " - " + upper.length();
+    })
+    .forEach(System.out::println);
+
+// Lambda capturing variable
+String prefix = "Name: ";
+names.stream()
+    .map(name -> prefix + name.toUpperCase())
+    .forEach(System.out::println);
+```
+
+When to use which:
+- Use method references when:
+  * Simply calling a single method
+  * Code is more readable with method reference
+  * No need for additional logic
+
+- Use lambda expressions when:
+  * Need multiple operations
+  * Need to capture variables
+  * Need to perform conditional logic
+  * Method reference would be less clear
+
+
+
+### Q2: What are the main types of Stream operations?
+A:
+Stream operations are divided into three categories:
+
+1. Intermediate Operations (return Stream):
+
+List<String> names = Arrays.asList("John", "Alice", "Bob", "Charlie");
+
+// Filter - selects elements based on a predicate
+names.stream()
+    .filter(name -> name.startsWith("A"))
+    .forEach(System.out::println);
+
+// Map - transforms each element
+names.stream()
+    .map(String::toUpperCase)
+    .forEach(System.out::println);
+
+// Distinct - removes duplicates
+names.stream()
+    .distinct()
+    .forEach(System.out::println);
+
+// Sorted - orders elements
+names.stream()
+    .sorted()
+    .forEach(System.out::println);
+
+2. Terminal Operations (return non-Stream):
+
+List<String> names = Arrays.asList("John", "Alice", "Bob", "Charlie");
+
+// Collect - gathers elements into a collection
+List<String> result = names.stream()
+    .filter(name -> name.length() > 3)
+    .collect(Collectors.toList());
+
+// Count - counts elements
+long count = names.stream()
+    .filter(name -> name.length() > 3)
+    .count();
+
+// AnyMatch - checks if any element matches
+boolean hasLongName = names.stream()
+    .anyMatch(name -> name.length() > 5);
+
+// FindFirst - gets first element
+Optional<String> first = names.stream()
+    .filter(name -> name.length() > 3)
+    .findFirst();
+
+// Optional is a container object that may or may not contain a value
+// It helps avoid NullPointerException by forcing you to handle the case when no value is present
+// Common Optional methods:
+// - isPresent(): checks if value exists
+// - get(): gets the value (throws NoSuchElementException if empty)
+// - orElse(): provides default value if empty
+// - ifPresent(): executes code if value exists
+
+// Example of handling Optional:
+first.ifPresent(name -> System.out.println("Found: " + name));
+// or
+String result = first.orElse("No name found");
+// or
+String result2 = first.orElseGet(() -> "No name found");
+// or
+first.ifPresentOrElse(
+    name -> System.out.println("Found: " + name),
+    () -> System.out.println("No name found")
+);
+
+## 2. Stream Creation
+
+### Q3: How can you create Streams in Java 17?
+A:
+
+1. From Collections:
+
+// stream() - creates sequential stream
+List<String> list = Arrays.asList("A", "B", "C");
+Stream<String> stream1 = list.stream();
+
+// parallelStream() - creates parallel stream
+Stream<String> parallelStream = list.parallelStream();
+
+2. From Arrays:
+
+// Arrays.stream() - creates stream from array
+String[] array = {"A", "B", "C"};
+Stream<String> stream2 = Arrays.stream(array);
+
+
+## 3. Intermediate Operations
+
+### Q4: What are the common intermediate operations?
+A:
+
+1. Filter:
+
+// filter() - selects elements based on condition
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6);
+List<Integer> evenNumbers = numbers.stream()
+    .filter(n -> n % 2 == 0)
+    .collect(Collectors.toList());
+
+2. Map:
+
+// map() - transforms each element
+List<String> names = Arrays.asList("John", "Alice");
+List<Integer> nameLengths = names.stream()
+    .map(String::length)
+    .collect(Collectors.toList());
+
+3. FlatMap:
+
+// flatMap() - flattens nested collections
+List<List<String>> lists = Arrays.asList(
+    Arrays.asList("A", "B"),
+    Arrays.asList("C", "D")
+);
+List<String> flatList = lists.stream()
+    .flatMap(List::stream)
+    .collect(Collectors.toList());
+
+4. Distinct:
+
+// distinct() - removes duplicates
+List<Integer> numbers = Arrays.asList(1, 2, 2, 3, 3, 4);
+List<Integer> uniqueNumbers = numbers.stream()
+    .distinct()
+    .collect(Collectors.toList());
+
+5. Sorted:
+
+// sorted() - orders elements
+List<String> names = Arrays.asList("Charlie", "Alice", "Bob");
+List<String> sortedNames = names.stream()
+    .sorted()
+    .collect(Collectors.toList());
+
+## 4. Terminal Operations
+
+### Q5: What are the common terminal operations?
+A:
+
+1. Collect:
+
+List<String> names = Arrays.asList("John", "Alice", "Bob");
+
+// toList() - collects to List
+List<String> list = names.stream()
+    .collect(Collectors.toList());
+
+// toSet() - collects to Set
+Set<String> set = names.stream()
+    .collect(Collectors.toSet());
+
+// toMap() - collects to Map
+Map<String, Integer> map = names.stream()
+    .collect(Collectors.toMap(
+        name -> name,    // key mapper
+        String::length   // value mapper
+    ));
+
+// joining() - joins elements with delimiter
+String joined = names.stream()
+    .collect(Collectors.joining(", "));
+
+2. Reduce:
+
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+// reduce() - combines elements into single result
+int sum = numbers.stream()
+    .reduce(0, Integer::sum);  // identity, accumulator
+
+// reduce() with optional result
+Optional<Integer> max = numbers.stream()
+    .reduce(Integer::max);     // accumulator only
+
+3. Match Operations:
+
+List<String> names = Arrays.asList("John", "Alice", "Bob");
+
+// allMatch() - checks if all elements match
+boolean allMatch = names.stream()
+    .allMatch(name -> name.length() > 2);
+
+// anyMatch() - checks if any element matches
+boolean anyMatch = names.stream()
+    .anyMatch(name -> name.startsWith("A"));
+
+// noneMatch() - checks if no elements match
+boolean noneMatch = names.stream()
+    .noneMatch(name -> name.length() > 10);
+
+## 5. Advanced Stream Operations
+
+### Q6: What are some advanced Stream operations in Java 17?
+A:
+
+1. Grouping and Partitioning:
+
+List<Person> people = Arrays.asList(
+    new Person("John", 25),
+    new Person("Alice", 30),
+    new Person("Bob", 25)
+);
+
+// groupingBy() - groups elements by classifier
+Map<Integer, List<Person>> byAge = people.stream()
+    .collect(Collectors.groupingBy(Person::getAge));
+
+// partitioningBy() - splits into two groups
+Map<Boolean, List<Person>> byAge25 = people.stream()
+    .collect(Collectors.partitioningBy(p -> p.getAge() > 25));
+
+ SDET Automation Scenarios
+
+### Q9: How to use Streams in UI Automation?
+A:
+
+1. Working with WebElements:
+```
+// Get all links and filter by text
+List<WebElement> links = driver.findElements(By.tagName("a"));
+List<String> filteredLinks = links.stream()
+    .map(WebElement::getText)
+    .filter(text -> text.contains("Login"))
+    .collect(Collectors.toList());
+
+// Get all input fields and validate
+List<WebElement> inputs = driver.findElements(By.tagName("input"));
+boolean allInputsValid = inputs.stream()
+    .allMatch(input -> input.isDisplayed() && input.isEnabled());
+
+// Find first matching element
+Optional<WebElement> firstMatch = inputs.stream()
+    .filter(input -> input.getAttribute("type").equals("email"))
+    .findFirst();
+```
+
+2. Handling Dynamic Elements:
+```
+// Wait for elements and collect their text
+List<String> texts = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.className("dynamic")))
+    .stream()
+    .map(WebElement::getText)
+    .collect(Collectors.toList());
+
+// Check if any element contains specific text
+boolean found = texts.stream()
+    .anyMatch(text -> text.contains("Expected Text"));
+```
+
+3. Data Validation:
+```
+// Compare expected and actual values
+List<String> expectedValues = Arrays.asList("Value1", "Value2", "Value3");
+List<String> actualValues = elements.stream()
+    .map(WebElement::getText)
+    .collect(Collectors.toList());
+
+boolean allMatch = expectedValues.stream()
+    .allMatch(expected -> actualValues.contains(expected));
+```
+
+### Q10: How to use Streams in API Testing?
+A:
+
+1. Processing API Responses:
+```
+// Extract and filter data from JSON response
+Response response = given()
+    .get("/api/users");
+
+List<User> users = Arrays.asList(response.as(User[].class));
+List<String> activeUserEmails = users.stream()
+    .filter(User::isActive)
+    .map(User::getEmail)
+    .collect(Collectors.toList());
+
+// Validate response data
+boolean allValid = users.stream()
+    .allMatch(user -> user.getId() != null && user.getEmail().contains("@"));
+```
+
+2. Comparing API and UI Data:
+```
+// Get data from API
+List<User> apiUsers = getUsersFromAPI();
+
+// Get data from UI
+List<WebElement> uiElements = driver.findElements(By.className("user-row"));
+List<User> uiUsers = uiElements.stream()
+    .map(element -> new User(
+        element.findElement(By.className("id")).getText(),
+        element.findElement(By.className("name")).getText()
+    ))
+    .collect(Collectors.toList());
+
+// Compare data
+boolean dataMatches = apiUsers.stream()
+    .allMatch(apiUser -> uiUsers.stream()
+        .anyMatch(uiUser -> uiUser.getId().equals(apiUser.getId())));
+```
+
+3. Performance Testing:
+```
+// Measure response times
+List<Long> responseTimes = IntStream.range(0, 100)
+    .mapToObj(i -> {
+        long startTime = System.currentTimeMillis();
+        given().get("/api/endpoint");
+        return System.currentTimeMillis() - startTime;
+    })
+    .collect(Collectors.toList());
+
+// Calculate statistics
+DoubleSummaryStatistics stats = responseTimes.stream()
+    .mapToDouble(Long::doubleValue)
+    .summaryStatistics();
+
+System.out.println("Average response time: " + stats.getAverage());
+System.out.println("Max response time: " + stats.getMax());
+System.out.println("Min response time: " + stats.getMin());
+```
+
+4. Data-Driven Testing:
+```
+// Process test data from CSV
+List<TestData> testData = readCSV("testdata.csv").stream()
+    .map(row -> new TestData(row[0], row[1], row[2]))
+    .collect(Collectors.toList());
+
+// Execute tests with different data
+testData.stream()
+    .forEach(data -> {
+        Response response = given()
+            .body(data)
+            .post("/api/endpoint");
+
+        assertThat(response.getStatusCode()).isEqualTo(200);
+    });
+```
