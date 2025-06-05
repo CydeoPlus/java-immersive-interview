@@ -50,6 +50,6 @@ public class StreamsWithSelenium {
 
     @AfterEach
     public void cleanUp() {
-        //driver.quit();
+        driver.quit();
     }
 }
